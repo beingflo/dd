@@ -15,7 +15,7 @@ const Help: Component = () => {
     <div class="max-w-2xl mt-4 md:mt-12 mx-auto px-4">
       <div class="flex flex-row gap-4 items-center">
         <Logo class="w-12 h-12" />
-        <h1 class="text-2xl font-bold tracking-tight">go</h1>
+        <h1 class="text-2xl font-bold tracking-tight">dd</h1>
       </div>
       <p class="mt-4">A tiny, opinionated link aggregation application.</p>
       <p class="mt-4 mb-10">
