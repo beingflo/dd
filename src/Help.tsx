@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import Logo from "../src/line.svg";
+import Logo from "../src/copy.svg";
 
 const Help: Component = () => {
   const Instruction = (props) => {
@@ -17,18 +17,13 @@ const Help: Component = () => {
         <Logo class="w-12 h-12" />
         <h1 class="text-2xl font-bold tracking-tight">dd</h1>
       </div>
-      <p class="mt-4">A tiny, opinionated link aggregation application.</p>
+      <p class="mt-4">A tiny, opinionated snippet manager.</p>
       <p class="mt-4 mb-10">
         You're already in the application, press <b>h</b> to toggle the help
         screen!
       </p>
       <Instruction left="h" right="Toggle help screen" />
-      <Instruction left="n" right="Save a new link" />
-      <Instruction left="enter" right="Visit selected link in tab" />
-      <Instruction left="cmd + enter" right="Visit selected link in new tab" />
-      <Instruction left="arrow up / down" right="Change selected link" />
       <Instruction left="c" right="Toggle configuration screen" />
-      <Instruction left="i" right="Toggle import screen" />
       <Instruction
         left="s"
         right="Synchronize state with remote if configured"
@@ -43,23 +38,13 @@ const Help: Component = () => {
       </p>
       <h2 class="text-xl font-semibold mt-12">Firefox url bar search</h2>
       <p class="my-4">
-        With Firefox, there is a handy way to search for and jump directly to
-        links saved in go with keyword search: Right click in the input field at
-        the top of the page, select 'Add a keyword for this search'. Next, edit
-        the search bookmark and modify the URL field to{" "}
-        <span class="font-mono">https://go.rest.quest/?q=%s</span>. Now you can
-        enter your keyword followed by your query in the browsers url bar. In
-        this mode, the application will jump directly to the top link if only
-        one satisfies the query, otherwise you will reach the app and can decide
-        which link to follow.
-      </p>
-      <h2 class="text-xl font-semibold mt-12">Firefox bookmark import</h2>
-      <p class="mt-4 pb-10">
-        This app implements a rudimentary bookmark import functionality. On
-        Firefox, navigate to the bookmark manager and export your bookmarks to a
-        JSON file. Then hit <b>i</b> in the normal view on go.rest.quest and
-        select your file. You can now import all your bookmarks and edit /
-        delete them from the main view as you desire.
+        With Firefox, there is a handy way to search for and directly copy a
+        snippet to the clipboard with keyword search: Right click in the input
+        field at the top of the page, select 'Add a keyword for this search'.
+        Next, edit the search bookmark and modify the URL field to{" "}
+        <span class="font-mono">https://dd.rest.quest/?q=%s</span>. Now you can
+        enter your keyword followed by your query in the browsers url bar and
+        the application will open, already filtered to your query.
       </p>
     </div>
   );
