@@ -10,7 +10,7 @@ const StoreContext = createContext({});
 const localState = localStorage.getItem(storeName);
 
 export const [state, setState] = createStore(
-  localState ? JSON.parse(localState) : { version: 0 }
+  localState ? JSON.parse(localState) : {}
 );
 
 export function StoreProvider(props) {
@@ -25,60 +25,53 @@ export function StoreProvider(props) {
       setS3Config(config: Object) {
         setState({ s3: config });
       },
-      accessLink(id: string) {
+      accessSnippet(id: string) {
         setState(
           produce((state: any) => {
-            state.links.forEach((link) => {
-              if (link.id === id) {
-                link.numAccessed += 1;
-                link.lastAccessedAt = Date.now();
+            state.snippets.forEach((snippet) => {
+              if (snippet.id === id) {
+                snippet.lastAccessedAt = Date.now();
               }
             });
-            state.version = state.version + 1;
           })
         );
       },
-      newLink(url: string, description: string) {
+      newSnippet(description: string, content: string) {
         setState({
-          links: [
-            ...(state.links ?? []),
+          snippets: [
+            ...(state.snippets ?? []),
             {
               id: getNewId(),
-              url,
               description,
+              content,
               createdAt: Date.now(),
               lastAccessedAt: null,
-              numAccessed: 0,
               deletedAt: null,
             },
           ],
-          version: state.version + 1,
         });
       },
-      updateLink(id: string, url: string, description: string) {
+      updateSnippet(id: string, description: string, content: string) {
         setState(
           produce((state: any) => {
-            state.links.forEach((link) => {
-              if (link.id === id) {
-                link.url = url;
-                link.description = description;
-                link.lastAccessedAt = Date.now();
+            state.snippets.forEach((snippet) => {
+              if (snippet.id === id) {
+                snippet.description = description;
+                snippet.content = content;
+                snippet.lastAccessedAt = Date.now();
               }
             });
-            state.version = state.version + 1;
           })
         );
       },
-      deleteLink(id: string) {
+      deleteSnippet(id: string) {
         setState(
           produce((state: any) => {
-            state.links.forEach((link) => {
-              if (link.id === id) {
-                link.deletedAt = Date.now();
-                link.lastAccessedAt = Date.now();
+            state.snippets.forEach((snippet) => {
+              if (snippet.id === id) {
+                snippet.deletedAt = Date.now();
               }
             });
-            state.version = state.version + 1;
           })
         );
       },
