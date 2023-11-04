@@ -56,29 +56,27 @@ const App: Component = () => {
     newSnippetInputRef?.focus();
   };
 
-  const copySnippet = (newTab: boolean) => {
+  const copySnippet = () => {
     if (newSnippetMode() || editSnippet()) {
       return;
     }
+
     const snippet = snippets()[selectedSnippetIdx()];
     accessSnippet(snippet?.id);
-    setSelectedSnippedIdx(0);
 
     if (!snippet) {
       return;
     }
 
-    // TODO copy snippet and close tab
-    if (newTab) {
-      setSearchTerm("");
-    } else {
-    }
+    navigator.clipboard.writeText(snippet.content);
+    setSearchTerm("");
+    setSelectedSnippedIdx(0);
   };
 
   if (searchUrlParam) {
     setSearchTerm(searchUrlParam);
     if (snippets().length === 1) {
-      copySnippet(true);
+      copySnippet();
     }
   }
 
@@ -89,8 +87,7 @@ const App: Component = () => {
       setEditSnippet(null);
       searchInputRef.blur();
     },
-    Enter: () => copySnippet(false),
-    "$mod+Enter": () => copySnippet(true),
+    Enter: () => copySnippet(),
     h: validateEvent(toggleHelp),
     //s: validateEvent(syncState),
     c: validateEvent(() => setShowConfig(!showConfig())),
