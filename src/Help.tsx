@@ -23,12 +23,15 @@ const Help: Component = () => {
         screen!
       </p>
       <Instruction left="h" right="Toggle help screen" />
+      <Instruction left="n" right="Save a new snippet" />
+      <Instruction left="enter" right="Copy selected snippet to clipboard" />
+      <Instruction left="arrow up / down" right="Change selected snippet" />
+      <Instruction left="cmd + k" right="Focus search input" />
       <Instruction left="c" right="Toggle configuration screen" />
       <Instruction
         left="s"
         right="Synchronize state with remote if configured"
       />
-      <Instruction left="cmd + k" right="Focus search input" />
       <h2 class="text-xl font-semibold mt-12">S3 synchronization and backup</h2>
       <p class="my-4">
         In the configuration of this app, you can add an endpoint and
