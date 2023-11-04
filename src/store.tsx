@@ -80,12 +80,15 @@ export function StoreProvider(props) {
         );
       },
       async syncState() {
-        const droppedSnippets = await s3Sync(state);
+        const [newLocal, newRemote, droppedLocal, droppedRemote] = await s3Sync(
+          state
+        );
 
         setTimeout(() => setState({ showToast: false }), 4000);
 
         setState({
-          dropped: droppedSnippets ?? [0, 0],
+          new: [newLocal, newRemote] ?? [0, 0],
+          dropped: [droppedLocal, droppedRemote] ?? [0, 0],
           showToast: true,
         });
       },
