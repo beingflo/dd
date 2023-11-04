@@ -89,7 +89,7 @@ const App: Component = () => {
     },
     Enter: () => copySnippet(),
     h: validateEvent(toggleHelp),
-    //s: validateEvent(syncState),
+    s: validateEvent(syncState),
     c: validateEvent(() => setShowConfig(!showConfig())),
     "$mod+k": validateEvent(() => {
       searchInputRef.focus();

@@ -18,30 +18,30 @@ export const s3Sync = async (state: any) => {
 
   console.info("Sync state");
 
-  let remoteLinks = { links: [] };
+  let remoteSnippets = { snippets: [] };
   try {
-    const linksResponse = await aws.fetch(
+    const snippetsResponse = await aws.fetch(
       `${state?.s3?.endpoint}${StateFile}`,
       {
         method: "GET",
       }
     );
-    remoteLinks = await linksResponse.json();
+    remoteSnippets = await snippetsResponse.json();
   } catch {}
 
   const [merged, droppedLocal, droppedRemote] = mergeState(
-    state.links,
-    remoteLinks.links
+    state.snippets,
+    remoteSnippets.snippets
   );
 
   setState({
-    links: [...merged],
+    snippets: [...merged],
   });
 
   await aws.fetch(`${state?.s3?.endpoint}${StateFile}`, {
     method: "PUT",
     body: JSON.stringify({
-      links: merged,
+      snippets: merged,
     }),
   });
 
@@ -56,34 +56,34 @@ export const mergeState = (
   let droppedLocal = 0;
   let droppedRemote = 0;
 
-  // Add links that are only remote
-  remote?.forEach((link) => {
-    if (!local?.find((l) => l.id === link.id)) {
-      merged.push(link);
+  // Add snippets that are only remote
+  remote?.forEach((snippet) => {
+    if (!local?.find((s) => s.id === snippet.id)) {
+      merged.push(snippet);
     }
   });
 
-  // Add links that are only local
-  local?.forEach((link) => {
-    if (!remote?.find((l) => l.id === link.id)) {
-      merged.push(link);
+  // Add snippets that are only local
+  local?.forEach((snippet) => {
+    if (!remote?.find((s) => s.id === snippet.id)) {
+      merged.push(snippet);
     }
   });
 
-  // From links that appear in both, take the one that has been modified last
-  local?.forEach((localLink) => {
-    const remoteLink = remote?.find((l) => l.id === localLink.id);
-    if (remoteLink) {
-      if (localLink?.lastAccessedAt < remoteLink.lastAccessedAt) {
-        merged.push(remoteLink);
-        console.info(`Dropping old local: ${JSON.stringify(localLink)}`);
+  // From snippets that appear in both, take the one that has been modified last
+  local?.forEach((localSnippet) => {
+    const remoteSnippet = remote?.find((l) => l.id === localSnippet.id);
+    if (remoteSnippet) {
+      if (localSnippet?.lastAccessedAt < remoteSnippet.lastAccessedAt) {
+        merged.push(remoteSnippet);
+        console.info(`Dropping old local: ${JSON.stringify(localSnippet)}`);
         droppedLocal += 1;
-      } else if (localLink.lastAccessedAt > remoteLink.lastAccessedAt) {
-        merged.push(localLink);
-        console.info(`Dropping old remote: ${JSON.stringify(remoteLink)}`);
+      } else if (localSnippet.lastAccessedAt > remoteSnippet.lastAccessedAt) {
+        merged.push(localSnippet);
+        console.info(`Dropping old remote: ${JSON.stringify(remoteSnippet)}`);
         droppedRemote += 1;
       } else {
-        merged.push(localLink);
+        merged.push(localSnippet);
       }
     }
   });
