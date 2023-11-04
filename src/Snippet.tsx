@@ -48,7 +48,7 @@ const Snippet: Component<SnippetProps> = (props: SnippetProps) => {
         </div>
       </div>
       <div
-        class="hidden md:block text-sm font-light text-left col-span-12 md:col-span-8 truncate"
+        class="hidden md:block text-sm font-light text-left col-span-12 md:col-span-8 whitespace-pre-wrap break-words"
         title={props.content}
       >
         {props.content}

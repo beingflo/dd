@@ -46,8 +46,8 @@ const NewSnippet: Component<NewSnippetProps> = (props) => {
       </div>
       <div class="text-sm font-light text-left col-span-12 md:col-span-8">
         <form onSubmit={onEditEnd} class="w-full">
-          <input
-            class="w-full border border-dashed border-gray-400 focus:outline-none"
+          <textarea
+            class="w-full h-24 border border-dashed border-gray-400 focus:outline-none"
             placeholder="content"
             value={props.editSnippet?.content ?? ""}
             onInput={(event) =>

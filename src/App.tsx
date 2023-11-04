@@ -118,7 +118,7 @@ const App: Component = () => {
                 type="text"
                 ref={searchInputRef}
                 class="focus:outline-none w-full text-md placeholder:font-thin block mb-12 border-0 focus:ring-0"
-                placeholder="Go somewhere..."
+                placeholder="Copy something..."
                 autofocus
                 value={searchTerm()}
                 onInput={(event) => {
