@@ -10,7 +10,7 @@ export type NewSnippetProps = {
 };
 
 const NewSnippet: Component<NewSnippetProps> = (props) => {
-  const [, { newSnippet, updateSnippet }] = useStore();
+  const [, { newSnippet, updateSnippet, syncState }] = useStore();
   const [newSnippetDescription, setNewSnippetDescription] = createSignal(null);
   const [newSnippetContent, setNewSnippetContent] = createSignal(null);
 
@@ -31,6 +31,7 @@ const NewSnippet: Component<NewSnippetProps> = (props) => {
     } else {
       newSnippet(newSnippetDescription(), newSnippetContent());
     }
+    syncState();
     props.onEditEnd();
   };
 

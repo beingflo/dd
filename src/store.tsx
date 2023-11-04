@@ -1,5 +1,6 @@
 import { createContext, createEffect, useContext } from "solid-js";
 import { createStore, produce } from "solid-js/store";
+import { s3Sync } from "./s3-utils";
 
 export const getNewId = () => crypto.randomUUID();
 
@@ -21,6 +22,9 @@ export function StoreProvider(props) {
     {
       toggleHelp() {
         setState({ help: !state.help });
+      },
+      hideToast() {
+        setState({ showToast: false });
       },
       setS3Config(config: Object) {
         setState({ s3: config });
@@ -74,6 +78,16 @@ export function StoreProvider(props) {
             });
           })
         );
+      },
+      async syncState() {
+        const droppedSnippets = await s3Sync(state);
+
+        setTimeout(() => setState({ showToast: false }), 4000);
+
+        setState({
+          dropped: droppedSnippets ?? [0, 0],
+          showToast: true,
+        });
       },
     },
   ];

@@ -6,32 +6,17 @@ import { useStore } from "./store";
 import { validateEvent } from "./utils";
 import Snippet from "./Snippet";
 import NewSnippet from "./NewSnippet";
-import { s3Sync } from "./s3-utils";
 
 const App: Component = () => {
-  const [state, { toggleHelp, accessSnippet }] = useStore();
+  const [state, { toggleHelp, accessSnippet, syncState }] = useStore();
   const [showConfig, setShowConfig] = createSignal(false);
   const [newSnippetMode, setNewSnippetMode] = createSignal(false);
   const [searchTerm, setSearchTerm] = createSignal("");
   const [editSnippet, setEditSnippet] = createSignal(null);
   const [selectedSnippetIdx, setSelectedSnippedIdx] = createSignal(0);
-  const [dropped, setDropped] = createSignal([0, 0]);
-  const [showToast, setShowToast] = createSignal(false);
-  const [syncing, setSyncing] = createSignal(false);
 
   let searchInputRef;
   let newSnippetInputRef;
-
-  const syncState = async () => {
-    if (!syncing()) {
-      const droppedSnippets = await s3Sync(state);
-      setDropped(droppedSnippets ?? [0, 0]);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 4000);
-      setSyncing(true);
-      setTimeout(() => setSyncing(false), 500);
-    }
-  };
 
   const urlParams = new URLSearchParams(window.location.search);
   const searchUrlParam = urlParams.get("q");
@@ -164,9 +149,10 @@ const App: Component = () => {
             </div>
           </div>
         </div>
-        <Show when={showToast()}>
+        <Show when={state?.showToast}>
           <div class="fixed bottom-0 right-0 bg-white p-2 font-light text-sm">
-            Synced: Dropped {dropped()[0]} local, {dropped()[1]} remote
+            Synced: Dropped {state?.dropped[0]} local, {state?.dropped[1]}{" "}
+            remote
           </div>
         </Show>
       </Show>
