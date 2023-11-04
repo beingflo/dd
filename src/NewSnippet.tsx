@@ -1,6 +1,7 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, onCleanup } from "solid-js";
 import { useStore } from "./store";
 import { Snippet } from "./Snippet";
+import { tinykeys } from "tinykeys";
 
 export type NewSnippetProps = {
   onEditEnd: () => void;
@@ -16,17 +17,28 @@ const NewSnippet: Component<NewSnippetProps> = (props) => {
   const onEditEnd = (event) => {
     event?.preventDefault();
 
+    const description =
+      newSnippetDescription() ?? props.editSnippet?.description;
+    const content = newSnippetContent() ?? props.editSnippet?.content;
+
+    if (!description && !content) {
+      console.log("No content");
+      return;
+    }
+
     if (props.editSnippet) {
-      updateSnippet(
-        props.editSnippet?.id,
-        newSnippetDescription() ?? props.editSnippet?.description,
-        newSnippetContent() ?? props.editSnippet?.content
-      );
+      updateSnippet(props.editSnippet?.id, description, content);
     } else {
       newSnippet(newSnippetDescription(), newSnippetContent());
     }
     props.onEditEnd();
   };
+
+  const cleanup = tinykeys(window, {
+    "$mod+Enter": () => onEditEnd(null),
+  });
+
+  onCleanup(cleanup);
 
   return (
     <div class="w-full grid grid-cols-12 gap-2 group">
