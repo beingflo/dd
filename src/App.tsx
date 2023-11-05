@@ -32,7 +32,10 @@ const App: Component = () => {
           snippet.content?.toLowerCase()?.includes(term?.toLowerCase())
       )
     );
-    filteredSnippets?.sort((a, b) => b.lastAccessedAt - a.lastAccessedAt);
+    filteredSnippets?.sort(
+      (a, b) =>
+        (b.lastAccessedAt ?? b.createdAt) - (a.lastAccessedAt ?? a.createdAt)
+    );
     return filteredSnippets;
   };
 
