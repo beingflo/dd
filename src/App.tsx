@@ -14,6 +14,7 @@ const App: Component = () => {
   const [searchTerm, setSearchTerm] = createSignal("");
   const [editSnippet, setEditSnippet] = createSignal(null);
   const [selectedSnippetIdx, setSelectedSnippedIdx] = createSignal(0);
+  const [showCopyToast, setShowCopyToast] = createSignal(false);
 
   let searchInputRef;
   let newSnippetInputRef;
@@ -57,6 +58,8 @@ const App: Component = () => {
     }
 
     navigator.clipboard.writeText(snippet.content);
+    setShowCopyToast(true);
+    setTimeout(() => setShowCopyToast(false), 2000);
     setSearchTerm("");
     setSelectedSnippedIdx(0);
   };
@@ -162,6 +165,11 @@ const App: Component = () => {
             <p>
               {state?.dropped[0]} local, {state?.dropped[1]} remote
             </p>
+          </div>
+        </Show>
+        <Show when={showCopyToast()}>
+          <div class="fixed bottom-0 right-0 bg-white p-2 font-light text-sm">
+            copied snippet
           </div>
         </Show>
       </Show>
