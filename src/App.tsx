@@ -66,9 +66,6 @@ const App: Component = () => {
 
   if (searchUrlParam) {
     setSearchTerm(searchUrlParam);
-    if (snippets().length === 1) {
-      copySnippet();
-    }
   }
 
   const cleanup = tinykeys(window, {
