@@ -1,4 +1,12 @@
-import { Component, createSignal, For, onCleanup, Show } from "solid-js";
+import {
+  Component,
+  createSignal,
+  For,
+  Match,
+  onCleanup,
+  Show,
+  Switch,
+} from "solid-js";
 import { tinykeys } from "tinykeys";
 import Help from "./Help";
 import Configuration from "./Configuration";
@@ -9,8 +17,7 @@ import NewSnippet from "./NewSnippet";
 import { ephemeralStore } from "./ephemeralStore";
 
 const App: Component = () => {
-  const [state, { toggleHelp, accessSnippet, syncState }] = useStore();
-  const [showConfig, setShowConfig] = createSignal(false);
+  const [state, { cycleScreen, accessSnippet, syncState }] = useStore();
   const [newSnippetMode, setNewSnippetMode] = createSignal(false);
   const [searchTerm, setSearchTerm] = createSignal("");
   const [editSnippet, setEditSnippet] = createSignal(null);
@@ -77,9 +84,9 @@ const App: Component = () => {
       searchInputRef.blur();
     },
     Enter: () => copySnippet(),
-    h: validateEvent(toggleHelp),
+    h: validateEvent(() => cycleScreen("help")),
+    c: validateEvent(() => cycleScreen("config")),
     s: validateEvent(syncState),
-    c: validateEvent(() => setShowConfig(!showConfig())),
     "$mod+k": validateEvent(() => {
       searchInputRef.focus();
     }),
@@ -98,81 +105,90 @@ const App: Component = () => {
   onCleanup(cleanup);
 
   return (
-    <Show when={state.help} fallback={<Help />}>
-      <Show when={!showConfig()} fallback={<Configuration />}>
-        <div class="flex flex-col w-full p-2 md:p-4">
-          <div class="w-full max-w-8xl mx-auto">
-            <form onSubmit={(event) => event.preventDefault()}>
-              <input
-                type="text"
-                ref={searchInputRef}
-                class="focus:outline-none w-full text-md placeholder:font-thin block mb-12 border-0 focus:ring-0"
-                placeholder="Copy something..."
-                autofocus
-                value={searchTerm()}
-                onInput={(event) => {
-                  setSearchTerm(event?.currentTarget?.value);
-                  setSelectedSnippedIdx(0);
-                }}
-              />
-            </form>
-            <div class="flex flex-col gap-4">
-              <Show when={newSnippetMode()}>
-                <NewSnippet
-                  ref={newSnippetInputRef}
-                  onEditEnd={() => setNewSnippetMode(false)}
+    <Switch
+      fallback={
+        <>
+          <div class="flex flex-col w-full p-2 md:p-4">
+            <div class="w-full max-w-8xl mx-auto">
+              <form onSubmit={(event) => event.preventDefault()}>
+                <input
+                  type="text"
+                  ref={searchInputRef}
+                  class="focus:outline-none w-full text-md placeholder:font-thin block mb-12 border-0 focus:ring-0"
+                  placeholder="Copy something..."
+                  autofocus
+                  value={searchTerm()}
+                  onInput={(event) => {
+                    setSearchTerm(event?.currentTarget?.value);
+                    setSelectedSnippedIdx(0);
+                  }}
                 />
-              </Show>
-              <For each={snippets()}>
-                {(snippet, idx) => (
-                  <Show
-                    when={snippet.id === editSnippet()?.id}
-                    fallback={
-                      <Snippet
-                        id={snippet.id}
-                        description={snippet.description}
-                        content={snippet.content}
-                        lastAccessedAt={snippet.lastAccessedAt}
-                        selected={idx() === selectedSnippetIdx()}
-                        onEdit={(snippet) => {
-                          setEditSnippet(snippet);
+              </form>
+              <div class="flex flex-col gap-4">
+                <Show when={newSnippetMode()}>
+                  <NewSnippet
+                    ref={newSnippetInputRef}
+                    onEditEnd={() => setNewSnippetMode(false)}
+                  />
+                </Show>
+                <For each={snippets()}>
+                  {(snippet, idx) => (
+                    <Show
+                      when={snippet.id === editSnippet()?.id}
+                      fallback={
+                        <Snippet
+                          id={snippet.id}
+                          description={snippet.description}
+                          content={snippet.content}
+                          lastAccessedAt={snippet.lastAccessedAt}
+                          selected={idx() === selectedSnippetIdx()}
+                          onEdit={(snippet) => {
+                            setEditSnippet(snippet);
+                          }}
+                        />
+                      }
+                    >
+                      <NewSnippet
+                        ref={newSnippetInputRef}
+                        editSnippet={editSnippet()}
+                        onEditEnd={() => {
+                          setEditSnippet(null);
                         }}
                       />
-                    }
-                  >
-                    <NewSnippet
-                      ref={newSnippetInputRef}
-                      editSnippet={editSnippet()}
-                      onEditEnd={() => {
-                        setEditSnippet(null);
-                      }}
-                    />
-                  </Show>
-                )}
-              </For>
+                    </Show>
+                  )}
+                </For>
+              </div>
             </div>
           </div>
-        </div>
-        <Show when={ephemeralStore?.showToast}>
-          <div class="fixed bottom-0 right-0 grid gap-x-2 grid-cols-2 bg-white p-2 font-light text-sm">
-            <p class="text-right">new</p>
-            <p>
-              {ephemeralStore?.new[0]} local, {ephemeralStore?.new[1]} remote
-            </p>
-            <p class="text-right">old</p>
-            <p>
-              {ephemeralStore?.dropped[0]} local, {ephemeralStore?.dropped[1]}{" "}
-              remote
-            </p>
-          </div>
-        </Show>
-        <Show when={showCopyToast()}>
-          <div class="fixed bottom-0 right-0 bg-white p-2 font-light text-sm">
-            copied snippet
-          </div>
-        </Show>
-      </Show>
-    </Show>
+          <Show when={ephemeralStore?.showToast}>
+            <div class="fixed bottom-0 right-0 grid gap-x-2 grid-cols-2 bg-white p-2 font-light text-sm">
+              <p class="text-right">new</p>
+              <p>
+                {ephemeralStore?.new[0]} local, {ephemeralStore?.new[1]} remote
+              </p>
+              <p class="text-right">old</p>
+              <p>
+                {ephemeralStore?.dropped[0]} local, {ephemeralStore?.dropped[1]}{" "}
+                remote
+              </p>
+            </div>
+          </Show>
+          <Show when={showCopyToast()}>
+            <div class="fixed bottom-0 right-0 bg-white p-2 font-light text-sm">
+              copied snippet
+            </div>
+          </Show>
+        </>
+      }
+    >
+      <Match when={state.screen === "help"}>
+        <Help />
+      </Match>
+      <Match when={state.screen === "config"}>
+        <Configuration />
+      </Match>
+    </Switch>
   );
 };
 
