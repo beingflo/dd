@@ -1,6 +1,7 @@
 import { createContext, createEffect, useContext } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { s3Sync } from "./s3-utils";
+import { setEphemeralStore } from "./ephemeralStore";
 
 export const getNewId = () => crypto.randomUUID();
 
@@ -84,9 +85,9 @@ export function StoreProvider(props) {
           state
         );
 
-        setTimeout(() => setState({ showToast: false }), 4000);
+        setTimeout(() => setEphemeralStore({ showToast: false }), 4000);
 
-        setState({
+        setEphemeralStore({
           new: [newLocal, newRemote] ?? [0, 0],
           dropped: [droppedLocal, droppedRemote] ?? [0, 0],
           showToast: true,

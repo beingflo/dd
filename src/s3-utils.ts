@@ -19,15 +19,13 @@ export const s3Sync = async (state: any) => {
   console.info("Sync state");
 
   let remoteSnippets = { snippets: [] };
-  try {
-    const snippetsResponse = await aws.fetch(
-      `${state?.s3?.endpoint}${StateFile}`,
-      {
-        method: "GET",
-      }
-    );
-    remoteSnippets = await snippetsResponse.json();
-  } catch {}
+  const snippetsResponse = await aws.fetch(
+    `${state?.s3?.endpoint}${StateFile}`,
+    {
+      method: "GET",
+    }
+  );
+  remoteSnippets = await snippetsResponse.json();
 
   const [merged, newLocal, newRemote, droppedLocal, droppedRemote] = mergeState(
     state.snippets,
