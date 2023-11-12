@@ -21,7 +21,7 @@ export function StoreProvider(props) {
   const store = [
     state,
     {
-      cycleScreen(screen: "help" | "config" | "app") {
+      cycleScreen(screen: "help" | "config" | "app" | "feedback") {
         const currentScreen = state.screen;
         let newScreen = "app";
         if (currentScreen !== screen) {

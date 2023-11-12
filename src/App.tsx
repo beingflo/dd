@@ -15,6 +15,7 @@ import { validateEvent } from "./utils";
 import Snippet from "./Snippet";
 import NewSnippet from "./NewSnippet";
 import { ephemeralStore } from "./ephemeralStore";
+import { Feedback } from "./Feedback";
 
 const App: Component = () => {
   const [state, { cycleScreen, accessSnippet, syncState }] = useStore();
@@ -85,6 +86,7 @@ const App: Component = () => {
     },
     Enter: () => copySnippet(),
     h: validateEvent(() => cycleScreen("help")),
+    f: validateEvent(() => cycleScreen("feedback")),
     c: validateEvent(() => cycleScreen("config")),
     s: validateEvent(syncState),
     "$mod+k": validateEvent(() => {
@@ -187,6 +189,9 @@ const App: Component = () => {
       </Match>
       <Match when={state.screen === "config"}>
         <Configuration />
+      </Match>
+      <Match when={state.screen === "feedback"}>
+        <Feedback />
       </Match>
     </Switch>
   );
