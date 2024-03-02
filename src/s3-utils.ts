@@ -23,6 +23,7 @@ export const s3Sync = async (state: any) => {
     `${state?.s3?.endpoint}${StateFile}`,
     {
       method: "GET",
+      headers: { "Cache-Control": "no-store" },
     }
   );
   remoteSnippets = await snippetsResponse.json();
